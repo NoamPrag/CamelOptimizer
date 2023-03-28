@@ -1,2 +1,3 @@
 (library
- (name camel_optimizer))
+ (name camel_optimizer)
+ (libraries lwt.unix cohttp cohttp-lwt-unix lambdasoup))
