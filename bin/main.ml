@@ -3,24 +3,27 @@ let max_age = 70
 let min_height = 140
 let max_height = 220
 
+open Camel_optimizer
+open Calculator
+
+let me : person =
+  Boy
+    {
+      age = 19;
+      height = 175;
+      haircolor = `Brown;
+      hairlength = `Short;
+      eyecolor = `Green;
+      beard = `None;
+      body = `Normal;
+    }
+
 let () =
-  for age = min_age to max_age do
-    for height = min_height to max_height do
-      let b : Camel_optimizer.Calculator.person =
-        Girl
-          {
-            age;
-            height;
-            haircolor = `Blonde;
-            hairlength = `Long;
-            eyecolor = `Blue;
-            boob_size = `C;
-            figure = `Chubby;
-          }
-      in
-      let result = Camel_optimizer.Calculator.calculate b in
-      print_newline ();
-      print_string @@ "age: " ^ string_of_int age ^ ", height: "
-      ^ string_of_int height ^ ": " ^ string_of_int result
-    done
-  done
+  let my_optimal_height = optimize_height me min_height max_height in
+  let my_optimal_age =
+    optimize_age (with_height me my_optimal_height) min_age max_age
+  in
+  print_endline @@ "a: "
+  ^ string_of_int my_optimal_age
+  ^ ", h: "
+  ^ string_of_int my_optimal_height
