@@ -15,7 +15,17 @@ let req body =
 type person = Boy of Boy.boy | Girl of Girl.girl
 
 let query = function Boy b -> Boy.boy_query b | Girl g -> Girl.girl_query g
+let cache_initial_size = 256
+let cache : (person, int) Hashtbl.t = Hashtbl.create cache_initial_size
 
 let calculate person =
-  `String (query person)
-  |> req |> Lwt_main.run |> parse $ ".result" |> R.leaf_text |> int_of_string
+  match Hashtbl.find_opt cache person with
+  | Some value -> value
+  | None ->
+      let result =
+        `String (query person)
+        |> req |> Lwt_main.run |> parse $ ".result" |> R.leaf_text
+        |> int_of_string
+      in
+      Hashtbl.add cache person result;
+      result
