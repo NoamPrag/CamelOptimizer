@@ -2,6 +2,8 @@ open Cohttp
 open Cohttp_lwt_unix
 open Lwt
 open Soup
+module Boy = Boy
+module Girl = Girl
 
 let camel_calculator_uri = Uri.of_string "https://kamelrechner.eu/en/result"
 
@@ -13,6 +15,14 @@ let req body =
   Cohttp_lwt.Body.to_string body
 
 type person = Boy of Boy.boy | Girl of Girl.girl
+
+let with_age p age =
+  match p with Boy b -> Boy { b with age } | Girl g -> Girl { g with age }
+
+let with_height p height =
+  match p with
+  | Boy b -> Boy { b with height }
+  | Girl g -> Girl { g with height }
 
 let query = function Boy b -> Boy.boy_query b | Girl g -> Girl.girl_query g
 let cache_initial_size = 256
